@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <script src="../js/lib-angularjs-1.6.9.js"></script>
+    <script src="../js/lib-angularjs.route-1.6.9.js"></script>
+</head>
+<body>
+<div ng-app="costApp" ng-controller="costController">
+    <b>Bill:</b>
+    <div>Quantity: <input type="number" min="0" ng-model="qty" required></div>
+    <div>Cost: <input type="number" min="0" ng-model="cost" required></div>
+    <div>
+        <b>Total:</b>
+        <span>
+      {{total | currency:'$ ':0}}
+    </span>
+        <button class="btn" ng-click="pay()">Pay</button>
+    </div>
+    <a href="#/">Index</a>
+    <a href="#list">List-comment</a>
+    <a-custom-directive name="banhbao">
+
+    </a-custom-directive>
+    <a-custom-directive name="banhgao">
+
+    </a-custom-directive>
+    <!--    <div ng-view></div>-->
+
+    <p>http</p>
+    <p>{{myWelcome}}</p>
+</div>
+
+
+<script>
+    let app = angular.module('costApp', ["ngRoute"]);
+    app.directive('aCustomDirective', function () {
+        let directive = {};
+        directive.restrict = 'E';
+        directive.template =
+            "Student:<b>{{student.name}}</b>," +
+            "Roll No:<b>{{student.rollno}}</b>";
+        directive.scope = {
+            student: "=name"
+        }
+        directive.compile = function (element, attributes) {
+            element.css("border", "1px solid #cccccc");
+            let linkFunction = function ($scope, element, attributes) {
+                element.html("<br></br>student:<b>" + $scope.student.name + "</b>," +
+                    "Roll No : <b>" + $scope.student.rollno + "</b><br/>");
+                element.css("background-color", "#ff00ff");
+            }
+            return linkFunction;
+        }
+        return directive;
+    })
+    app.config(function ($routeProvider) {
+        $routeProvider
+            .when("/",
+                {
+                    templateUrl: "index.html"
+                })
+            .when("/list",
+                {
+                    templateUrl: "list-comment.html"
+                })
+    })
+    app.controller('costController', function ($scope, $http) {
+        $scope.qty = 0;
+        $scope.cost = 0;
+        $scope.total = 0;
+        $scope.pay = function () {
+            this.total = this.qty * this.cost;
+        }
+        $scope.banhbao = {};
+        $scope.banhbao.name = "Hello";
+        $scope.banhbao.rollno = 1;
+
+        $scope.banhgao = {};
+        $scope.banhgao.name = "Campuchia";
+        $scope.banhgao.rollno = 2;
+
+        $http({
+            method: "GET",
+            url: "test.html"
+        }).then(
+            function mySuccess(response) {
+                $scope.myWelcome = response.data;
+            }, function myError(response) {
+                $scope.myWelcome = response.statusText;
+            }
+        )
+    })
+</script>
+</body>
+</html>
